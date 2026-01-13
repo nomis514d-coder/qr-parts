@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Fiche pièce</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Fiche pièce</h1>
+
+<p><span class="label">Numéro :</span> <span id="pn"></span></p>
+<p><span class="label">Description :</span> <span id="desc"></span></p>
+<p><span class="label">Matériau :</span> <span id="mat"></span></p>
+<p><span class="label">Masse :</span> <span id="mass"></span> kg</p>
+<p><span class="label">Révision :</span> <span id="rev"></span></p>
+
+<p id="error" style="color:red;"></p>
+
+<script>
+const sheetId = "REMPLACE_PAR_TON_ID";
+const sheetName = "Feuille1";
+
+const urlParams = new URLSearchParams(window.location.search);
+const partNumber = urlParams.get("pn");
+
+document.getElementById("pn").textContent = partNumber || "—";
+
+if (!partNumber) {
+    document.getElementById("error").textContent = "Aucun numéro de pièce fourni.";
+} else {
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+
+    fetch(url)
+        .then(res => res.text())
+        .then(text => {
+            const json = JSON.parse(text.substring(47, text.length - 2));
+            const rows = json.table.rows;
+
+            let found = false;
+
+            rows.forEach(row => {
+                const pn = row.c[0]?.v;
+                if (pn === partNumber) {
+                    document.getElementById("desc").textContent = row.c[1]?.v || "";
+                    document.getElementById("mat").textContent  = row.c[2]?.v || "";
+                    document.getElementById("mass").textContent = row.c[3]?.v || "";
+                    document.getElementById("rev").textContent  = row.c[4]?.v || "";
+                    found = true;
+                }
+            });
+
+            if (!found) {
+                document.getElementById("error").textContent = "Pièce non trouvée.";
+            }
+        });
+}
+</script>
+
+</body>
+</html>
