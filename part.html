@@ -49,12 +49,17 @@ if (!partNumber) {
 
             rows.forEach(row => {
                 const pn = row.c[0]?.v;
-                if (pn === partNumber) {
-                    document.getElementById("desc").textContent = row.c[1]?.v || "";
-                    document.getElementById("mat").textContent  = row.c[2]?.v || "";
-                    document.getElementById("mass").textContent = row.c[3]?.v || "";
-                    document.getElementById("rev").textContent  = row.c[4]?.v || "";
-                    found = true;
+                if (!pnCell) return;
+
+    const pnSheet = pnCell.toString().trim();
+    const pnUrl   = partNumber.toString().trim();
+
+    if (pnSheet === pnUrl) {
+        document.getElementById("desc").textContent = row.c[1]?.v || "";
+        document.getElementById("mat").textContent  = row.c[2]?.v || "";
+        document.getElementById("mass").textContent = row.c[3]?.v || "";
+        document.getElementById("rev").textContent  = row.c[4]?.v || "";
+        found = true;
                 }
             });
 
@@ -67,3 +72,4 @@ if (!partNumber) {
 
 </body>
 </html>
+
