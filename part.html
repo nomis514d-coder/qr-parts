@@ -37,7 +37,7 @@ document.getElementById("pn").textContent = partNumber || "—";
 if (!partNumber) {
     document.getElementById("error").textContent = "Aucun numéro de pièce fourni.";
 } else {
-    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+    const url = `https://docs.google.com/spreadsheets/d/10UW5KR-MJBtLVO8OqKxdymwRYOxrnfH3UyCd3tC6HG8/edit?gid=1977162438#gid=1977162438`;
 
     fetch(url)
         .then(res => res.text())
@@ -72,5 +72,6 @@ if (!partNumber) {
 
 </body>
 </html>
+
 
 
