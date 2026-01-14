@@ -26,8 +26,7 @@
 <p id="error" style="color:red;"></p>
 
 <script>
-const sheetId = "10UW5KR-MJBtLVO8OqKxdymwRYOxrnfH3UyCd3tC6HG8";
-const sheetName = "Feuille1";
+const sheetUrl = "https://docs.google.com/spreadsheets/d/10UW5KR-MJBtLVO8OqKxdymwRYOxrnfH3UyCd3tC6HG8/gviz/tq?tqx=out:json";
 
 const urlParams = new URLSearchParams(window.location.search);
 const partNumber = urlParams.get("pn");
@@ -37,9 +36,7 @@ document.getElementById("pn").textContent = partNumber || "—";
 if (!partNumber) {
     document.getElementById("error").textContent = "Aucun numéro de pièce fourni.";
 } else {
-    const url = `https://docs.google.com/spreadsheets/d/10UW5KR-MJBtLVO8OqKxdymwRYOxrnfH3UyCd3tC6HG8/edit?gid=1977162438#gid=1977162438`;
-
-    fetch(url)
+    fetch(sheetUrl)
         .then(res => res.text())
         .then(text => {
             const json = JSON.parse(text.substring(47, text.length - 2));
@@ -48,30 +45,33 @@ if (!partNumber) {
             let found = false;
 
             rows.forEach(row => {
-                const pn = row.c[0]?.v;
+                const pnCell = row.c[0]?.v;
                 if (!pnCell) return;
 
-    const pnSheet = pnCell.toString().trim();
-    const pnUrl   = partNumber.toString().trim();
-
-    if (pnSheet === pnUrl) {
-        document.getElementById("desc").textContent = row.c[1]?.v || "";
-        document.getElementById("mat").textContent  = row.c[2]?.v || "";
-        document.getElementById("mass").textContent = row.c[3]?.v || "";
-        document.getElementById("rev").textContent  = row.c[4]?.v || "";
-        found = true;
+                if (pnCell.toString().trim() === partNumber.trim()) {
+                    document.getElementById("desc").textContent = row.c[1]?.v || "";
+                    document.getElementById("mat").textContent  = row.c[2]?.v || "";
+                    document.getElementById("mass").textContent = row.c[3]?.v || "";
+                    document.getElementById("rev").textContent  = row.c[4]?.v || "";
+                    found = true;
                 }
             });
 
             if (!found) {
-                document.getElementById("error").textContent = "Pièce non trouvée.";
+                document.getElementById("error").textContent = "Pièce non trouvée dans la base.";
             }
+        })
+        .catch(err => {
+            document.getElementById("error").textContent = "Erreur de lecture Google Sheets.";
+            console.error(err);
         });
 }
 </script>
 
+
 </body>
 </html>
+
 
 
 
