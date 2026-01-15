@@ -26,7 +26,7 @@ const pn = params.get("pn");
 if (!pn) {
   document.getElementById("error").textContent = "Aucun numéro de pièce fourni.";
 } else {
-  fetch(`data/${pn}.json`)
+  fetch(`/qr-paarts/data/${pn}.json`)
     .then(res => {
       if (!res.ok) throw new Error("Pièce introuvable");
       return res.json();
@@ -44,6 +44,7 @@ if (!pn) {
 </script>
 </body>
 </html>
+
 
 
 
