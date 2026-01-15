@@ -23,13 +23,19 @@ body { font-family: Arial; padding: 20px; }
 const params = new URLSearchParams(window.location.search);
 const pn = params.get("pn");
 
+const errorEl = document.getElementById("error");
+
 if (!pn) {
-  document.getElementById("error").textContent = "Aucun numéro de pièce fourni.";
+  errorEl.textContent = "Aucun numéro de pièce fourni.";
 } else {
-  fetch(`/qr-paarts/data/${pn}.json`)
-    .then(res => {
-      if (!res.ok) throw new Error("Pièce introuvable");
-      return res.json();
+  const jsonUrl = `https://nomis514d-coder.github.io/qr-parts/data/${pn}.json`;
+
+  fetch(jsonUrl)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("HTTP " + response.status);
+      }
+      return response.json();
     })
     .then(data => {
       document.getElementById("pn").textContent   = data.PartNumber;
@@ -37,13 +43,16 @@ if (!pn) {
       document.getElementById("mat").textContent  = data.Material;
       document.getElementById("mass").textContent = data.Mass;
     })
-    .catch(() => {
-      document.getElementById("error").textContent = "Aucune donnée trouvée pour cette pièce.";
+    .catch(err => {
+      errorEl.textContent = "Erreur chargement JSON : " + err.message;
+      console.error("Fetch error:", err);
     });
 }
 </script>
+
 </body>
 </html>
+
 
 
 
